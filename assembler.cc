@@ -186,7 +186,7 @@ void segunda_pasada_y_generar_txt(const char* archivo_asm, const char* archivo_t
     fprintf(salida, "----------------------------------------\n");
 
 //tabla de símbolos:
-    fprintf(salida, "--- TABLA DE SIMBOLOS ---\n");
+    fprintf(salida, "--- tabla de símbolos ---\n");
     for (int i = 0; i < total_simbolos; i++) {
         fprintf(salida, "%s: 0x%08X\n", tabla_simbolos[i].etiqueta, tabla_simbolos[i].direccion);
     }

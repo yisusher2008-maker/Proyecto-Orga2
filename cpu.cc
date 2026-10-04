@@ -21,7 +21,9 @@ void inicializar_cpu(cpu *c, uint64_t direccion_inicio) {
     c->pc = direccion_inicio;
     c->direccion_inicio = direccion_inicio;
     c->stat = stat_aok;
-    c->registros[0] = 0; // R0 siempre es 0 de forma estricta
+    c->registros[0] = 0;
+    // Inicializar el Stack Pointer (R6) al final de la memoria simulada
+    c->registros[6] = direccion_inicio + tam_memoria;
 }
 
 //actualiza las banderas ZF, SF y OF según el resultado de la operación:
@@ -153,19 +155,18 @@ static void memory(cpu *c, instruccion *inst) {
             break;
 
         case i_push:
-            c->registros[6] -= 8; // R6 es el Stack Pointer (%rsp)
-            if (c->registros[6] % 8 != 0) { c->stat = stat_aex; return; }
+                c->registros[6] -= 8;
+                direccion = c->registros[6];
+                offset = direccion - c->direccion_inicio;
 
-            direccion = c->registros[6];
-            offset = direccion - c->direccion_inicio;
+                if (offset % 8 != 0) { c->stat = stat_aex; return; }
+                if (offset + 8 > tam_memoria) { c->stat = stat_adr; return; }
 
-            if (offset + 8 > tam_memoria) { c->stat = stat_adr; return; }
-
-            uint64_t valor_push = c->registros[inst->ra];
-            for (int i = 0; i < 8; i++) {
-                c->memoria[offset + i] = (valor_push >> (i * 8)) & 0xFF;
-            }
-            break;
+                uint64_t valor_push = c->registros[inst->ra];
+                for (int i = 0; i < 8; i++) {
+                    c->memoria[offset + i] = (valor_push >> (i * 8)) & 0xFF;
+                }
+                break;
 
         case i_pop:
             direccion = c->registros[6];
