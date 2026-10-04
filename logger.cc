@@ -3,7 +3,7 @@
 
 //Por si acaso dejare notas en lo que creo que podrian saber o no para que les sirva pa la defensa
 
-FILE* abrir_logger(const char *nombre_archivo) {
+FILE* iniciar_log(const char *nombre_archivo) {
     FILE *f = fopen(nombre_archivo, "w"); //Abre el archivo en forma de escribir o "write"
   //Eso lo que hace es que si el archivo no existe lo crea y si ya existe borra el contenido y escribe
   // en el desde 0, eso para que no se mezclen los registros aunque no estoy seguro de si esta bien eso
@@ -29,7 +29,7 @@ void registrar_estado(FILE *log_file, const cpu *c) { //Se pasan con el * porque
   // 64 bits siempre necesitara 16 digitos hexadecimales (eso porque el entero tiene 8bytes pue)
   //ll (long long): no hay mucho que explicar, solo indica que va a imprimir un entero de 64 bits
   //X indica que las letras del hexadecimal se imprimiran en mayuscula
-  fprintf(log_file, 
+fprintf(log_file, 
         "PC: 0x%016llX | "
         "R0: 0x%016llX R1: 0x%016llX R2: 0x%016llX R3: 0x%016llX "
         "R4: 0x%016llX R5: 0x%016llX R6: 0x%016llX R7: 0x%016llX | "
@@ -48,7 +48,7 @@ void registrar_estado(FILE *log_file, const cpu *c) { //Se pasan con el * porque
     fflush(log_file); // Garantiza escritura inmediata por cada ciclo
 }
 
-void cerrar_logger(FILE *log_file) {
+void cerrar_log(FILE *log_file) {
     if (log_file) {
         fclose(log_file);
     }
