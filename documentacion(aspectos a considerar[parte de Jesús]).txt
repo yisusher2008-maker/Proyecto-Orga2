@@ -82,3 +82,20 @@ Validar extensión .asm.
 Llamar a calcular_direccion_inicio(), primera_pasada(), segunda_pasada_y_generar_txt().
 
 Llamar a inicializar_cpu(), cargar_memoria(), iniciar_log(), ciclo_cpu(), cerrar_log().
+
+Flujo del main:
+1. Menú: ¿archivo o teclado?
+   ├─ Archivo: pide nombre, valida .asm
+   └─ Teclado: crea codigo_teclado.asm
+2. Calcula dirección de inicio (cédulas)
+3. Primera pasada → tabla de símbolos
+4. Segunda pasada → archivo .txt
+5. Inicializa CPU
+6. Carga memoria desde el .txt
+7. Abre trace.log
+8. Ejecuta ciclo de la CPU (5 etapas por instrucción)
+9. Cierra trace.log
+10. Muestra estado final de STAT
+
+Para compilar:
+gcc -Wall -Wextra -std=c99 -o emulador main.cc assembler.cc cpu.cc logger.cc
