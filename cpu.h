@@ -17,8 +17,8 @@
 #define i_jxx    0x3
 #define i_push   0x8
 #define i_pop    0x9
-#define i_ldd    0x6   
-#define i_std    0x7   
+#define i_ldd    0x2   
+#define i_std    0x4  
 
 //funciones de la ALU:
 #define f_andq 0x0

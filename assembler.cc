@@ -268,18 +268,16 @@ void segunda_pasada_y_generar_txt(const char* archivo_asm, const char* archivo_t
             icode = 0x9; ifun = 0x0;
             rA = parsear_registro(op1);
         }
-//nota: el enunciado no especifica icode para LDD ni MRMOVQ, se asigna 0x6 porque no colisiona con la tabla oficial del PDF
         else if (strcmp(mnemonico, "LDD") == 0 || strcmp(mnemonico, "MRMOVQ") == 0) {
-            icode = 0x6; ifun = 0x0;
+            icode = 0x2; ifun = 0x0;
             rA = parsear_registro(op1);
             int32_t desp = 0;
             if (parsear_memoria(op2, &desp, &rB)) {
                 valC = (uint64_t)(int64_t)desp;
             }
         }
-//nota: el enunciado no especifica icode para STD ni RMMOVQ, se asigna 0x7 porque no colisiona con la tabla oficial del PDF
         else if (strcmp(mnemonico, "STD") == 0 || strcmp(mnemonico, "RMMOVQ") == 0) {
-            icode = 0x7; ifun = 0x0;
+            icode = 0x4; ifun = 0x0;
             rA = parsear_registro(op1);
             int32_t desp = 0;
             if (parsear_memoria(op2, &desp, &rB)) {
@@ -304,7 +302,7 @@ void segunda_pasada_y_generar_txt(const char* archivo_asm, const char* archivo_t
             if (dir != 0xFFFFFFFF)
                 valC = (uint64_t)(int64_t)(dir - (pc_actual + 8));
         }
-//nota: el enunciado no especifica ifun para JNZ.se extiende la familia JXX: 0x0=JMP, 0x1=JL, 0x2=JE, 0x3=JNZ
+
         else if (strcmp(mnemonico, "JNZ") == 0) {
             icode = 0x3; ifun = 0x3;
             uint32_t dir = buscar_direccion_etiqueta(op1);
