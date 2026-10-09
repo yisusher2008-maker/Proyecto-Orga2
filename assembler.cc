@@ -223,6 +223,19 @@ void segunda_pasada_y_generar_txt(const char* archivo_asm, const char* archivo_t
 
         char mnemonico[20] = {0}, op1[50] = {0}, op2[50] = {0};
         sscanf(instruccion_str, "%s %[^,], %s", mnemonico, op1, op2);
+        // Eliminar espacios al final de op1
+        int len1 = strlen(op1);
+        while (len1 > 0 && isspace((unsigned char)op1[len1 - 1])) {
+            op1[len1 - 1] = '\0';
+            len1--;
+        }
+
+        // Eliminar espacios al final de op2
+        int len2 = strlen(op2);
+        while (len2 > 0 && isspace((unsigned char)op2[len2 - 1])) {
+            op2[len2 - 1] = '\0';
+            len2--;
+        }
 
 //decodificación de instrucciones:
         if (strcmp(mnemonico, "HALT") == 0) {
@@ -284,30 +297,50 @@ void segunda_pasada_y_generar_txt(const char* archivo_asm, const char* archivo_t
                 valC = (uint64_t)(int64_t)desp;
             }
         }
-        else if (strcmp(mnemonico, "JMP") == 0) {
-            icode = 0x3; ifun = 0x0;
-            uint32_t dir = buscar_direccion_etiqueta(op1);
-            if (dir != 0xFFFFFFFF)
-                valC = (uint64_t)(int64_t)(dir - (pc_actual + 8));
-        }
+            else if (strcmp(mnemonico, "JMP") == 0) {
+                icode = 0x3; ifun = 0x0;
+                uint32_t dir = buscar_direccion_etiqueta(op1);
+                if (dir != 0xFFFFFFFF) {
+                    int64_t offset = (int64_t)(dir - (pc_actual + 8));
+                    valC = (uint64_t)offset & 0xFFFFFFFFFFFFULL;
+                    if (offset < 0) {
+                        valC |= 0x800000000000ULL;
+                    }
+                }
+            }
         else if (strcmp(mnemonico, "JL") == 0) {
             icode = 0x3; ifun = 0x1;
             uint32_t dir = buscar_direccion_etiqueta(op1);
-            if (dir != 0xFFFFFFFF)
-                valC = (uint64_t)(int64_t)(dir - (pc_actual + 8));
+            if (dir != 0xFFFFFFFF) {
+                int64_t offset = (int64_t)(dir - (pc_actual + 8));
+                valC = (uint64_t)offset & 0xFFFFFFFFFFFFULL;
+                if (offset < 0) {
+                    valC |= 0x800000000000ULL;
+                }
+            }
         }
         else if (strcmp(mnemonico, "JE") == 0) {
             icode = 0x3; ifun = 0x2;
             uint32_t dir = buscar_direccion_etiqueta(op1);
-            if (dir != 0xFFFFFFFF)
-                valC = (uint64_t)(int64_t)(dir - (pc_actual + 8));
+            if (dir != 0xFFFFFFFF) {
+                int64_t offset = (int64_t)(dir - (pc_actual + 8));
+                valC = (uint64_t)offset & 0xFFFFFFFFFFFFULL;
+                if (offset < 0) {
+                    valC |= 0x800000000000ULL;
+                }
+            }
         }
 
         else if (strcmp(mnemonico, "JNZ") == 0) {
             icode = 0x3; ifun = 0x3;
             uint32_t dir = buscar_direccion_etiqueta(op1);
-            if (dir != 0xFFFFFFFF)
-                valC = (uint64_t)(int64_t)(dir - (pc_actual + 8));
+            if (dir != 0xFFFFFFFF) {
+                int64_t offset = (int64_t)(dir - (pc_actual + 8));
+                valC = (uint64_t)offset & 0xFFFFFFFFFFFFULL;
+                if (offset < 0) {
+                    valC |= 0x800000000000ULL;
+                }
+            }
         }
         else {
             printf("Advertencia: Instruccion desconocida '%s'\n", mnemonico);
